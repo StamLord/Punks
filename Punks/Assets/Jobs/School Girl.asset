@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18406280f92c85c40967238a00597925, type: 3}
+  m_Name: School Girl
+  m_EditorClassIdentifier: 
+  limitAppearance:
+    pHeads: 
+    pTorsos: 
+    pLegs: 
+    pShoes: 
+    pAccesories: 
+    pColors: 04000000
+  minStats:
+    health: 50
+    attack: 1
+    defense: 1
+  maxStats:
+    health: 70
+    attack: 3
+    defense: 3

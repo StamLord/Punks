@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88d6be905f4b19d42aaa49c1439d8957, type: 3}
+  m_Name: BeerBottle
+  m_EditorClassIdentifier: 
+  name: Beer Bottle
+  model: {fileID: 1202142091014386, guid: 7e654c46a1675d54b9f49922393cbc7a, type: 3}
+  offset: {x: -0.18, y: 0.02, z: -0.06}
+  rotation: {x: 16.45, y: -20.48, z: -77.069}
+  mainAnimation:
+  - Bottle 1
+  - Bottle 2
+  - Bottle 3
+  secondaryAnimation: []
+  durability: 3
+  attack: 2
+  speed: 5
+  canBeDropped: 1
