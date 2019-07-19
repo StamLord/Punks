@@ -4,17 +4,20 @@ using UnityEngine;
 
 public class Pickup : MonoBehaviour, IInteractable
 {
-    [SerializeField]
-    private Item _item;
-    [SerializeField]
-    private float _rotationSpeed;
-    [SerializeField]
-    private Transform modelParent;
+    [SerializeField] private string _displayText;
+    [SerializeField] private Item _item;
+    [SerializeField] private float _rotationSpeed;
+    [SerializeField] private Transform modelParent;
 
     public bool Interact(Actor actor)
     {
         Debug.Log(actor.name + "::Tried to pick up::" + gameObject.name);
         return PickupItem(actor);
+    }
+
+    public string DisplayText()
+    {
+        return _displayText;
     }
 
     bool PickupItem(Actor actor)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public enum NPCState { IDLE, ROAM, FOLLOW, FIGHT, FLEE}
+public enum NPCState { IDLE, ROAM, SCHEDULE, FOLLOW, FIGHT, FLEE}
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class NPCBrain : Brain, IInteractable
@@ -11,14 +11,19 @@ public class NPCBrain : Brain, IInteractable
     private NavMeshAgent agent;
     private LineRenderer lr;
 
+    private bool isSpawned;
+
     [SerializeField] private NPCState state;
-    [SerializeField] NPCState lastState;
+    [SerializeField] private NPCState lastState;
 
     //Pathfinding
     private float lastCalculation;
     private Queue<Vector3> path = new Queue<Vector3>();
     [SerializeField] private Transform goal;
     [SerializeField] private Transform lastGoal;
+
+    //Schedule
+    [SerializeField] private Routine todaysRoutine;
 
     //Roaming
     private Transform[] roamPath;
@@ -33,6 +38,8 @@ public class NPCBrain : Brain, IInteractable
         agent = GetComponent<NavMeshAgent>();
         agent.updateRotation = false;
         lr = GetComponent<LineRenderer>();
+
+        FindTodaysRoutine();
     }
 
     private void Update()
@@ -48,10 +55,12 @@ public class NPCBrain : Brain, IInteractable
         switch (state)
         {
             case NPCState.IDLE:
-                Idle();
                 break;
             case NPCState.ROAM:
                 Roam();
+                break;
+            case NPCState.SCHEDULE:
+                Schedule();
                 break;
             case NPCState.FOLLOW:
                 if (goal)
@@ -94,6 +103,11 @@ public class NPCBrain : Brain, IInteractable
 
     private void LateUpdate()
     {
+        if (schedule != null && isSpawned == false)
+        {
+            actor.Move(Vector3.zero);
+            return;
+        }
 
         if(path.Count > 0 && Vector3.Distance(transform.position, path.Peek()) <= agent.stoppingDistance)
         {
@@ -106,7 +120,7 @@ public class NPCBrain : Brain, IInteractable
             direction.y = 0;
 
             float distance = agent.remainingDistance;
-            if (state == NPCState.ROAM)
+            if (state == NPCState.ROAM || state == NPCState.SCHEDULE)
                 direction *= .3f;
             else if (state == NPCState.FOLLOW && distance < 8f)
             {
@@ -126,9 +140,69 @@ public class NPCBrain : Brain, IInteractable
         roamPath = path;
     }
 
-    private void Idle()
+    private void Schedule()
     {
-        
+        if (schedule == null)
+            return;
+
+
+        for (int i = 0; i < todaysRoutine._actions.Count; i++)
+        {
+            //Find first not done
+            if(todaysRoutine._actions[i].done == false)
+            {
+                HourMinutes time = new HourMinutes(todaysRoutine._actions[i].time);
+
+                //Check if time to start
+                if(DayNightCycle.instance.GetTime().hours >= time.hours &&
+                    DayNightCycle.instance.GetTime().minutes >= time.minutes)
+                {
+                    //Check location exists in current map
+                    if (LocationsManager.instance.LocationExists(todaysRoutine._actions[i].destination))
+                    {
+                        //Set path
+                        goal = LocationsManager.instance.GetLocation(todaysRoutine._actions[i].destination);
+
+                        if (todaysRoutine._actions[i].type == RoutineAction.RoutineActionType.SPAWN)
+                            Spawn(goal.position);
+
+                        UpdatePath();
+
+                        //Set done when close enough
+                        if (Vector3.Distance(transform.position, goal.position) <= agent.stoppingDistance)
+                        {
+                            todaysRoutine._actions[i].done = true;
+
+                            if (todaysRoutine._actions[i].type == RoutineAction.RoutineActionType.DESPAWN)
+                            {
+                                Despawn();
+                            }
+                        }
+                    }
+                }
+
+                return;
+            }
+        }
+    }
+
+    private void FindTodaysRoutine()
+    {
+        if (schedule == null)
+            return;
+
+        for (int i = 0; i < schedule.routine.Count; i++)
+        {
+            for (int j = 0; j < schedule.routine[i].days.Length; j++)
+            {
+                if (DayNightCycle.instance.currentDay == schedule.routine[i].days[j])
+                {
+                    todaysRoutine = schedule.routine[i];
+                    return;
+                }
+            }
+
+        }
     }
 
     private void Roam()
@@ -166,7 +240,7 @@ public class NPCBrain : Brain, IInteractable
 
         if(Vector3.Distance(transform.position, goal.position) <= agent.stoppingDistance)
         {
-            actor.RotateTowards(goal.position - transform.position);
+            StartCoroutine(actor.RotateOverTime(goal.position - transform.position, .25f));
 
             if (Random.Range(0, 2) == 1)
                 actor.MainAttack();
@@ -175,7 +249,7 @@ public class NPCBrain : Brain, IInteractable
         }
 
         //Update nearby members
-        if (actor.GetActorData().gang != null)
+        if (GangManager.instance.GetGang(actor.GetActorData().gang))
         {
             List<Brain> gangMembers = FindGangMembers(10f);
             for (int i = 0; i < gangMembers.Count; i++)
@@ -238,27 +312,60 @@ public class NPCBrain : Brain, IInteractable
         state = newState;
     }
 
+    public override void StartInteraction()
+    {
+        base.StartInteraction();
+        SetState(NPCState.IDLE);
+    }
+
+    public override void EndInteraction()
+    {
+        base.EndInteraction();
+        SetState(lastState);
+    }
+
     public bool Interact(Actor interactor)
     {
         Debug.Log(actor + "::Interacts with::" + this);
 
-        if (state != NPCState.IDLE)
-            SetState(NPCState.IDLE);
-        else
-            SetState(lastState);
+        StartInteraction();
 
         //SpeachBaloonManager.instance.CreateBalloon(transform, Random.Range(0,100).ToString(), 2f, 5f);
-        DialogueManager.instance.StartDialogue(actor.GetDialogue);
+        //DialogueManager.instance.StartDialogue(actor.GetDialogue);
+        StartCoroutine(actor.RotateOverTime(interactor.transform.position - transform.position, .25f));
+
+        if (InGang(interactor.GetActorData().gang))
+            InteractionManager.instance.OpenInteractionMenu(new InteractionType[]
+            {
+                InteractionType.Talk,
+                InteractionType.Order,
+                InteractionType.Stats,
+                InteractionType.Trade
+            }, new Brain[]{
+                interactor.GetComponent<Brain>(),
+                this });
+        else
+            InteractionManager.instance.OpenInteractionMenu(new InteractionType[]
+            {
+                InteractionType.Talk
+            }, new Brain[]{
+                interactor.GetComponent<Brain>(),
+                this });
 
         return true;
+    }
+
+    public string DisplayText()
+    {
+        return "Talk";
     }
 
     protected override void OnDamaged(Actor attacker)
     {
         base.OnDamaged(attacker);
 
-        Gang gang = actor.GetActorData().gang;
-        if (gang && gang == attacker.GetActorData().gang)
+        string gang = actor.GetActorData().gang;
+        if (string.IsNullOrEmpty(gang) == false && gang == attacker.GetActorData().gang)
         {
             return;
         }
@@ -270,5 +377,20 @@ public class NPCBrain : Brain, IInteractable
     {
         base.OnAttacking(enemy);
     }
+
+    private void Spawn(Vector3 position)
+    {
+        agent.Warp(position);
+        transform.SetParent(CharacterManager.instance.spawnParent);
+        isSpawned = true;
+    }
+
+    private void Despawn()
+    {
+        agent.Warp(CharacterManager.instance.despawnZone.position);
+        transform.SetParent(CharacterManager.instance.despawnZone);
+        isSpawned = false;
+    }
+
 
 }

@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<Character xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <actorData>
+    <firstName>Base</firstName>
+    <lastName>Template</lastName>
+    <gang />
+    <stats>
+      <health>0</health>
+      <attack>0</attack>
+      <defense>0</defense>
+    </stats>
+    <money>0</money>
+    <appearance>
+      <head>0</head>
+      <torso>0</torso>
+      <legs>0</legs>
+      <shoes>0</shoes>
+      <accessory>0</accessory>
+      <color>0</color>
+    </appearance>
+  </actorData>
+  <schedule>
+    <name />
+    <hideFlags>None</hideFlags>
+    <routine>
+      <Routine>
+        <days>
+          <Day>Sunday</Day>
+          <Day>Monday</Day>
+          <Day>Tuesday</Day>
+          <Day>Wednesday</Day>
+          <Day>Thursday</Day>
+          <Day>Friday</Day>
+          <Day>Saturday</Day>
+        </days>
+        <_actions>
+          <RoutineAction>
+            <type>SPAWN</type>
+            <time />
+            <destination />
+          </RoutineAction>
+        </_actions>
+      </Routine>
+    </routine>
+  </schedule>
+</Character>

@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<Gang xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <name>Cobras</name>
+  <hideFlags>None</hideFlags>
+  <gangName>Cobras</gangName>
+  <gangColor>
+    <r>1</r>
+    <g>0.9964248</g>
+    <b>0</b>
+    <a>1</a>
+  </gangColor>
+  <uniform>
+    <head>-1</head>
+    <torso>-1</torso>
+    <legs>-1</legs>
+    <shoes>-1</shoes>
+    <accessory>-1</accessory>
+    <color>0</color>
+  </uniform>
+  <leader>
+    <firstName />
+    <lastName />
+    <gang />
+    <stats>
+      <health>0</health>
+      <attack>0</attack>
+      <defense>0</defense>
+    </stats>
+    <appearance>
+      <head>0</head>
+      <torso>0</torso>
+      <legs>0</legs>
+      <shoes>0</shoes>
+      <accessory>0</accessory>
+      <color>0</color>
+    </appearance>
+  </leader>
+  <maxCapacity>10</maxCapacity>
+  <members>
+    <ActorData>
+      <firstName />
+      <lastName />
+      <gang />
+      <stats>
+        <health>100</health>
+        <attack>10</attack>
+        <defense>10</defense>
+      </stats>
+      <appearance>
+        <head>0</head>
+        <torso>0</torso>
+        <legs>0</legs>
+        <shoes>0</shoes>
+        <accessory>0</accessory>
+        <color>0</color>
+      </appearance>
+    </ActorData>
+  </members>
+  <allies />
+  <enemies />
+  <autoRecruit>true</autoRecruit>
+  <recruitPerDay>1</recruitPerDay>
+  <lastRecruitDay>0</lastRecruitDay>
+</Gang>

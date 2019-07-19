@@ -19,7 +19,7 @@ public class Gang : ScriptableObject
 
     public bool autoRecruit;
     public float recruitPerDay;
-    public int lastRecruitDay { get; private set; }
+    public int lastRecruitDay;
 
     public bool AttemptRecruit(ActorData actor)
     {

@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<Gang xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <name>Player Gang</name>
+  <hideFlags>None</hideFlags>
+  <gangName>Player Gang</gangName>
+  <gangColor>
+    <r>0</r>
+    <g>0.7090578</g>
+    <b>1</b>
+    <a>1</a>
+  </gangColor>
+  <uniform>
+    <head>-1</head>
+    <torso>-1</torso>
+    <legs>-1</legs>
+    <shoes>-1</shoes>
+    <accessory>-1</accessory>
+    <color>0</color>
+  </uniform>
+  <leader>
+    <firstName />
+    <lastName />
+    <gang />
+    <stats>
+      <health>0</health>
+      <attack>0</attack>
+      <defense>0</defense>
+    </stats>
+    <appearance>
+      <head>0</head>
+      <torso>0</torso>
+      <legs>0</legs>
+      <shoes>0</shoes>
+      <accessory>0</accessory>
+      <color>0</color>
+    </appearance>
+  </leader>
+  <maxCapacity>10</maxCapacity>
+  <members>
+    <ActorData>
+      <firstName>First</firstName>
+      <lastName>Member</lastName>
+      <gang>Player Gang</gang>
+      <stats>
+        <health>100</health>
+        <attack>5</attack>
+        <defense>5</defense>
+      </stats>
+      <appearance>
+        <head>0</head>
+        <torso>0</torso>
+        <legs>0</legs>
+        <shoes>0</shoes>
+        <accessory>0</accessory>
+        <color>4</color>
+      </appearance>
+    </ActorData>
+  </members>
+  <allies />
+  <enemies />
+  <autoRecruit>false</autoRecruit>
+  <recruitPerDay>0</recruitPerDay>
+  <lastRecruitDay>0</lastRecruitDay>
+</Gang>

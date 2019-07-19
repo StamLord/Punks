@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<DialogueTree xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <switchList>
+    <Switch name="Introduction" state="true" />
+  </switchList>
+  <nodes>
+    <DialogueNode>
+      <conditions>
+        <string>Introduction=false</string>
+      </conditions>
+      <fromTime>00:00</fromTime>
+      <toTime>23:59</toTime>
+      <text>Huh? Do I know you?</text>
+      <switches />
+    </DialogueNode>
+    <DialogueNode>
+      <conditions>
+        <string>Introduction=false</string>
+      </conditions>
+      <fromTime>00:00</fromTime>
+      <toTime>23:59</toTime>
+      <text>You are starting to piss me off..</text>
+      <switches>
+        <set>Introduction=TRUE</set>
+      </switches>
+    </DialogueNode>
+    <DialogueNode>
+      <conditions>
+        <string>Introduction</string>
+      </conditions>
+      <fromTime>00:00</fromTime>
+      <toTime>23:59</toTime>
+      <text>Seriosly... I don't want to have to beat you up.</text>
+      <switches />
+    </DialogueNode>
+  </nodes>
+  <nextNode>0</nextNode>
+</DialogueTree>

@@ -6,10 +6,15 @@ using UnityEngine;
 public class Brain : MonoBehaviour
 {
     protected Actor actor;
-    [SerializeField]
-    protected float intractionRadius = 2f;
+    [SerializeField] protected Schedule schedule;
+    [SerializeField] protected float intractionRadius = 2f;
+    protected List<GameObject> nearbyInteractableObjects = new List<GameObject>();
     protected IInteractable nearestInteractable;
+    protected GameObject nearestInteractableObject;
     protected IInteractable self; //For ignoring
+
+    private bool _inInteraction;
+    public bool inInteraction { get { return _inInteraction; } }
 
     protected virtual void Start()
     {
@@ -19,26 +24,33 @@ public class Brain : MonoBehaviour
         self = actor.GetComponent<IInteractable>();
     }
 
-    protected void FindInteractables()
+    protected void FindAllInteractables()
     {
         Collider[] nearbyObjects = Physics.OverlapSphere(transform.position, intractionRadius);
-        List<GameObject> nearbyInteractables = new List<GameObject>();
+        nearbyInteractableObjects.Clear();
 
         for (int i = 0; i < nearbyObjects.Length; i++)
         {
             IInteractable interactable = nearbyObjects[i].GetComponent<IInteractable>();
 
             if (interactable != null && interactable != self)
-                nearbyInteractables.Add(nearbyObjects[i].gameObject);
+                nearbyInteractableObjects.Add(nearbyObjects[i].gameObject);
         }
+    }
 
+    protected void FindNearestInteractble()
+    {
         float distance = Mathf.Infinity;
-        for (int i = 0; i < nearbyInteractables.Count; i++)
+        nearestInteractableObject = null;
+        nearestInteractable = null;
+
+        for (int i = 0; i < nearbyInteractableObjects.Count; i++)
         {
-            float currentDistance = Vector3.Distance(transform.position, nearbyInteractables[i].transform.position);
+            float currentDistance = Vector3.Distance(transform.position, nearbyInteractableObjects[i].transform.position);
             if (currentDistance < distance)
             {
-                nearestInteractable = nearbyInteractables[i].GetComponent<IInteractable>();
+                nearestInteractableObject = nearbyInteractableObjects[i];
+                nearestInteractable = nearbyInteractableObjects[i].GetComponent<IInteractable>();
                 distance = currentDistance;
             }
         }
@@ -46,7 +58,7 @@ public class Brain : MonoBehaviour
 
     protected List<Brain> FindGangMembers(float radius)
     {
-        if (actor.GetActorData().gang == null)
+        if (string.IsNullOrEmpty(actor.GetActorData().gang))
             return null;
 
         Collider[] nearbyObjects = Physics.OverlapSphere(transform.position, radius);
@@ -63,9 +75,12 @@ public class Brain : MonoBehaviour
         return members;
     }
 
-    public bool InGang(Gang gang)
+    public bool InGang(string gang)
     {
-        if (actor.GetActorData().gang == gang)
+        //Check if exists, then check if is equal
+        if (GangManager.instance.GetGang(gang) && 
+            string.IsNullOrEmpty(actor.GetActorData().gang) == false &&
+            actor.GetActorData().gang == gang)
             return true;
         else
             return false;
@@ -84,5 +99,20 @@ public class Brain : MonoBehaviour
     protected virtual void OnAttacking(Actor enemy)
     {
 
+    }
+
+    public void SetRoutine(Schedule newRoutine)
+    {
+        schedule = newRoutine;
+    }
+
+    public virtual void StartInteraction()
+    {
+         _inInteraction = true;
+    }
+
+    public virtual void EndInteraction()
+    {
+        _inInteraction = false;
     }
 }

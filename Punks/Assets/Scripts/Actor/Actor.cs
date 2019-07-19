@@ -2,23 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public struct ActorStats
-{
-    public int health;
-    public int attack;
-    public int defense;
-}
-
-[System.Serializable]
-public struct ActorData
-{
-    public string firstName;
-    public string lastName;
-    public Gang gang;
-    public ActorStats stats;
-    public AppearanceData appearance;
-}
+[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Collider))]
+[RequireComponent(typeof(Animator))]
 
 public class Actor : MonoBehaviour, IDamagable
 {
@@ -65,8 +51,12 @@ public class Actor : MonoBehaviour, IDamagable
     private float lastAttack;
 
     [Header("Dialogue")]
-    [SerializeField] private Dialogue dialogue = new Dialogue();
-    public Dialogue GetDialogue { get { return dialogue; } }
+    [SerializeField] private DialogueTree _dialogue = new DialogueTree();
+    public DialogueTree GetDialogue { get { return _dialogue; } }
+    public void SetDialogue(DialogueTree dialogue)
+    {
+        _dialogue = dialogue;
+    }
 
     //Damage Event
     public delegate void OnDamaged(Actor attacker);
@@ -76,6 +66,9 @@ public class Actor : MonoBehaviour, IDamagable
     public delegate void OnAttacking(Actor enemy);
     public event OnAttacking OnAttackingEvent;
 
+    [Header("Ground Check Distance")]
+    [SerializeField] float groundCheckDistance = .2f;
+
     //Flags
     [SerializeField]
     private bool _isGrounded;
@@ -83,6 +76,7 @@ public class Actor : MonoBehaviour, IDamagable
     private bool _inAttack;
     private bool _isDead;
     public bool isDead { get { return _isDead; } }
+    
 
     void Start()
     {
@@ -106,9 +100,10 @@ public class Actor : MonoBehaviour, IDamagable
     public void LoadActor(ActorData data)
     {
         actorData = data;
+        Gang actorGang = GangManager.instance.GetGang(actorData.gang);
 
-        if (actorData.gang)
-            Customization.instance.DressCharacter(head, torso, legs, shoes, GetComponentInChildren<SkinnedMeshRenderer>(), actorData.appearance, actorData.gang.uniform);
+        if (actorGang)
+            Customization.instance.DressCharacter(head, torso, legs, shoes, GetComponentInChildren<SkinnedMeshRenderer>(), actorData.appearance, actorGang.uniform);
         else
             Customization.instance.DressCharacter(head, torso, legs, shoes, GetComponentInChildren<SkinnedMeshRenderer>(), actorData.appearance);
 
@@ -158,8 +153,11 @@ public class Actor : MonoBehaviour, IDamagable
             }
         }
 
-        if (actorData.gang != null)
-            UpdateCurrentTerritory();
+        if (string.IsNullOrEmpty(actorData.gang) == false)
+        {
+            if(GangManager.instance.GetGang(actorData.gang))
+                UpdateCurrentTerritory();
+        }
     }
 
     private void LateUpdate()
@@ -172,11 +170,10 @@ public class Actor : MonoBehaviour, IDamagable
 
     public void Move(Vector3 velocity)
     {
-
         Vector3 currentVelocity = rigidbody.velocity;
         Vector3 targetVelocity = velocity * speed;
 
-        if (_isDead || _inAttack)
+        if(animator.GetCurrentAnimatorStateInfo(1).IsName("Idle") == false && animator.GetCurrentAnimatorStateInfo(1).IsName("Empty") == false)
             targetVelocity = Vector3.zero;
 
         Vector3 velocityChange = targetVelocity - currentVelocity;
@@ -194,7 +191,7 @@ public class Actor : MonoBehaviour, IDamagable
         RotateTowards(velocity);
     }
 
-    public void RotateTowards(Vector3 direction)
+    private void RotateTowards(Vector3 direction)
     {
         if (direction == Vector3.zero)
             return;
@@ -203,6 +200,21 @@ public class Actor : MonoBehaviour, IDamagable
         Quaternion targetRot = Quaternion.LookRotation(direction, transform.up);
 
         transform.rotation = Quaternion.Slerp(currentRot, targetRot, rotationSpeed * Time.deltaTime);
+    }
+
+    public IEnumerator RotateOverTime(Vector3 direction, float time)
+    {
+        float timer = 0;
+        Quaternion startRot = transform.rotation;
+        Quaternion targetRot = Quaternion.LookRotation(direction, transform.up);
+
+        while (timer < time)
+        {
+            timer += Time.deltaTime;
+
+            transform.rotation = Quaternion.Slerp(startRot, targetRot, timer / time);
+            yield return new WaitForEndOfFrame();
+        }
     }
 
     public void Jump()
@@ -219,8 +231,7 @@ public class Actor : MonoBehaviour, IDamagable
 
     private bool GroundCheck()
     {
-        //Debug.DrawRay(transform.position + Vector3.up * 0.1f, -Vector3.up );
-        return Physics.Raycast(transform.position + Vector3.up * 0.1f, -Vector3.up, 0.2f);
+        return Physics.Raycast(transform.position + Vector3.up * 0.1f, -Vector3.up, groundCheckDistance);
     }
 
     public void EquipWeapon(Weapon weapon)

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Day { Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday}
+
 public class DayNightCycle : MonoBehaviour
 {
     [Header("Time Settings")]
@@ -14,8 +16,10 @@ public class DayNightCycle : MonoBehaviour
     private float _timeOfDay;
     public float timeOfDay { get { return _timeOfDay; } }
 
-    [SerializeField]
-    private int _dayNumber = 0;
+
+    [SerializeField] private Day _currentDay;
+    public Day currentDay { get { return _currentDay; } }
+    [SerializeField] private int _dayNumber = 0;
     public int dayNumber { get { return _dayNumber; } }
 
     [SerializeField]
@@ -75,6 +79,7 @@ public class DayNightCycle : MonoBehaviour
         if (_timeOfDay > 1)
         {
             _dayNumber++;
+            _currentDay = (Day)(((int)_currentDay + 1) % 7);
             _timeOfDay -= 1;
 
             //New Year
@@ -105,7 +110,6 @@ public class DayNightCycle : MonoBehaviour
         sun.color = sunColor.Evaluate(intensity);
     }
 
-
     public int GetMinutes()
     {
         return (int)(1440 * _timeOfDay);
@@ -115,4 +119,51 @@ public class DayNightCycle : MonoBehaviour
     {
         return GetMinutes() / 60;
     }
+
+    public HourMinutes GetTime()
+    {
+        return new HourMinutes(GetHours(), GetMinutes() % 60);
+    }
+}
+
+[System.Serializable]
+public class HourMinutes
+{
+    private int _hours;
+    private int _minutes;
+
+    public int hours { get { return _hours; } }
+    public int minutes { get { return _minutes; } }
+
+    public HourMinutes(int hour, int minute)
+    {
+        _hours = hour;
+        _minutes = minute;
+    }
+
+    public HourMinutes(string hoursMinutes)
+    {
+        string h = "";
+        string m = "";
+
+        bool flag = false;
+        for (int i = 0; i < hoursMinutes.Length; i++)
+        {
+            if (flag == false)
+            {
+                if (hoursMinutes[i] == ':')
+                    flag = true;
+                else
+                    h = string.Concat(h, hoursMinutes[i]);
+            }
+            else
+            {
+                m = string.Concat(m, hoursMinutes[i]);
+            }
+        }
+
+        int.TryParse(h, out _hours);
+        int.TryParse(m, out _minutes);
+    }
+
 }

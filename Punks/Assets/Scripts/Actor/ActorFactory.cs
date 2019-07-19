@@ -2,13 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public struct ActorStats
+{
+    public int health;
+    public int attack;
+    public int defense;
+}
+
+[System.Serializable]
+public struct ActorData
+{
+    public string firstName;
+    public string lastName;
+    public string gang;
+    public ActorStats stats;
+    public int money;
+    public AppearanceData appearance;
+}
+
 public static class ActorFactory
 {
     public static ActorData GenerateActor(Job job, Gang gang)
     {
         ActorData newActor = new ActorData();
 
-        newActor.gang = gang;
+        if(gang)
+            newActor.gang = gang.gangName;
 
         if (job)
         {
@@ -30,3 +50,5 @@ public static class ActorFactory
         return newActor;
     }
 }
+
+

@@ -10,8 +10,8 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI nameHolder;
     [SerializeField] private TextMeshProUGUI textHolder;
 
-    [SerializeField]
-    private Queue<string> sentences;
+    [SerializeField] private DialogueTree currentDialogue;
+    [SerializeField] private DialogueNode currentNode;
 
     [SerializeField]
     private bool _inDialogue;
@@ -27,17 +27,7 @@ public class DialogueManager : MonoBehaviour
             Debug.LogWarning("More than 1 instance of DialogueManager exists!");
     }
 
-    void Start()
-    {
-        sentences = new Queue<string>();
-    }
-
-    void Update()
-    {
-        
-    }
-
-    public void StartDialogue(Dialogue dialogue)
+    public void StartDialogue(DialogueTree dialogue)
     {
         _inDialogue = true;
 
@@ -45,34 +35,30 @@ public class DialogueManager : MonoBehaviour
 
         nameHolder.text = "[ " + dialogue.name + " ]";
 
-        sentences.Clear();
+        currentDialogue = dialogue;
 
-        for (int i = 0; i < dialogue.sentences.Length; i++)
-        {
-            sentences.Enqueue(dialogue.sentences[i]);
-        }
-
-        DisplayNextSentence();
+        DisplayNextNode();
     }
 
-    public void DisplayNextSentence()
+    public void DisplayNextNode()
     {
-        if (sentences.Count < 1)
+        currentNode = currentDialogue.GetNextNode();
+
+        if (currentNode == null)
         {
             EndDialogue();
             return;
         }
 
-        string sentence = sentences.Dequeue();
+        textHolder.text = currentNode.text;
 
-        textHolder.text = sentence;
-
+        currentDialogue.ActivateSwitches(currentNode);
     }
 
     public void EndDialogue()
     {
         _inDialogue = false;
         dialogueWindow.SetActive(false);
-        Debug.Log("end");
+        currentDialogue.Reset();
     }
 }

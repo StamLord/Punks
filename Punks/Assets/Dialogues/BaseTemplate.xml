@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<DialogueTree xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <switchList>
+    <Switch name="Switch1" state="false" />
+    <Switch name="Switch2" state="false" />
+  </switchList>
+  <nodes>
+    <DialogueNode>
+      <conditions />
+      <fromTime>00:00</fromTime>
+      <toTime>23:59</toTime>
+      <text>First sentenece to be displayed. Will turn Switch1 on.</text>
+      <switches>
+        <set>Switch1=TRUE</set>
+      </switches>
+    </DialogueNode>
+    <DialogueNode>
+      <conditions>
+        <string>Switch1</string>
+      </conditions>
+      <fromTime>00:00</fromTime>
+      <toTime>23:59</toTime>
+      <text>Second sentenece to be displayed when Switch1 is on.</text>
+      <switches />
+    </DialogueNode>
+  </nodes>
+  <nextNode>0</nextNode>
+</DialogueTree>

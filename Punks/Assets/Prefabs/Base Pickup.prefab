@@ -76,6 +76,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59a7bf1849caf4b42bdc84671cff6367, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _displayText: Pickup
   _item: {fileID: 0}
   _rotationSpeed: 0
   modelParent: {fileID: 7034127057934399688}

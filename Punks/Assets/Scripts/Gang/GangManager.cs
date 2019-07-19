@@ -1,12 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public class GangManager : MonoBehaviour
 {
+    private string directory = "Gangs";
+
     [Header("Gangs")]
     [SerializeField]
-    private Gang[] gangs;
+    private List<Gang> gangs = new List<Gang>();
     private DayNightCycle timeSystem;
 
     [Header("Auto Recruiting")]
@@ -29,13 +32,51 @@ public class GangManager : MonoBehaviour
     void Start()
     {
         timeSystem = DayNightCycle.instance;
-
+        LoadAllGangs();
         InitializeSpawned();
+    }
+
+    void CreateDirectory()
+    {
+        if (Directory.Exists(Application.dataPath + "/" + directory) == false)
+        {
+            Directory.CreateDirectory(Application.dataPath + "/" + directory);
+        }
+    }
+
+    void LoadAllGangs()
+    {
+        CreateDirectory();
+
+        DirectoryInfo dir = new DirectoryInfo(Application.dataPath + "/" + directory);
+        FileInfo[] info = dir.GetFiles("*.xml");
+
+        for (int i = 0; i < info.Length; i++)
+        {
+            gangs.Add(XML.Deserialize<Gang>(info[i].FullName));
+            Debug.Log("Loaded Gang::" + info[i].FullName);
+        }
+    }
+
+    void SaveAllGangs()
+    {
+        for (int i = 0; i < gangs.Count; i++)
+        {
+            SaveGang(gangs[i]);
+            Debug.Log("Saved Gang::" + gangs[i]);
+        }
+    }
+
+    void SaveGang(Gang gang)
+    {
+        CreateDirectory();
+
+        XML.Serialize(gang, Application.dataPath + "/" + directory + "/" + gang.gangName + ".xml");
     }
 
     private void InitializeSpawned()
     {
-        for (int i = 0; i < gangs.Length; i++)
+        for (int i = 0; i < gangs.Count; i++)
         {
             spawnedMembers.Add(gangs[i], new List<ActorData>());
         }
@@ -57,7 +98,7 @@ public class GangManager : MonoBehaviour
 
     public void AutoRecruit()
     {
-        for (int i = 0; i < gangs.Length; i++)
+        for (int i = 0; i < gangs.Count; i++)
         {
             if(gangs[i].autoRecruit)
             {
@@ -72,7 +113,7 @@ public class GangManager : MonoBehaviour
 
     public void Recruit(ActorData actor, Gang gang)
     {
-        for (int i = 0; i < gangs.Length; i++)
+        for (int i = 0; i < gangs.Count; i++)
         {
             if(gang.gangName == gangs[i].gangName)
             {
@@ -113,6 +154,22 @@ public class GangManager : MonoBehaviour
 
     public void AddToSpawned(ActorData member)
     {
-        spawnedMembers[member.gang].Add(member);
+        Gang gang = GetGang(member.gang);
+        if(gang)
+            spawnedMembers[gang].Add(member);
+    }
+
+    public Gang GetGang(string gangName)
+    {
+        if (string.IsNullOrEmpty(gangName) == false)
+        {
+            for (int i = 0; i < gangs.Count; i++)
+            {
+                if (gangName == gangs[i].gangName)
+                    return gangs[i];
+            }
+        }
+
+        return null;
     }
 }

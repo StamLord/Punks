@@ -6,8 +6,12 @@ using UnityEngine.UI;
 
 public class PlayerController : Brain
 {
-    public new Camera camera;
+    [Header("References")]
+    private new Camera camera;
+    public Image healthBar;
+    public TextMeshProUGUI moneyDisplay;
     public TextMeshProUGUI territoryName;
+    public InteractionText interaction;
     public GameObject takeOverParent;
     public Image territoryTakeoverBar;
 
@@ -33,13 +37,21 @@ public class PlayerController : Brain
 
     private void Update()
     {
-        FindInteractables();
+        FindAllInteractables();
+        FindNearestInteractble();
+        UpdateInteractionText();
 
-        if(Input.GetButtonDown("Interact"))
+        if (Input.GetButtonDown("Interact"))
         {
             if (DialogueManager.instance.inDialogue)
             {
-                DialogueManager.instance.DisplayNextSentence();
+                DialogueManager.instance.DisplayNextNode();
+                return;
+            }
+
+            else if(InteractionManager.instance.isOpen)
+            {
+                InteractionManager.instance.CloseInteractionMenu();
                 return;
             }
 
@@ -89,6 +101,7 @@ public class PlayerController : Brain
         }
 
         UpdateTerritoryName();
+        UpdateHealthBar();
     }
 
     void FixedUpdate()
@@ -107,6 +120,9 @@ public class PlayerController : Brain
         {
             input *= 0.5f;
         }
+
+        if (inInteraction)
+            input = Vector3.zero;
 
         actor.Move(input);
 
@@ -155,7 +171,7 @@ public class PlayerController : Brain
 
     private void UpdateNearbyAllies()
     {
-        if (actor.GetActorData().gang != null)
+        if (GangManager.instance.GetGang(actor.GetActorData().gang))
         {
             List<Brain> gangMembers = FindGangMembers(10f);
             for (int i = 0; i < gangMembers.Count; i++)
@@ -191,6 +207,21 @@ public class PlayerController : Brain
         }
     }
 
+    private void UpdateHealthBar()
+    {
+        if(healthBar)
+            healthBar.fillAmount = (float)actor.GetStats.health / (float)actor.GetActorData().stats.health;
+    }
+
+    private void UpdateInteractionText()
+    {
+        if (nearestInteractable == null)
+            interaction.ChangeTarget(null, "");
+        else
+            interaction.ChangeTarget(nearestInteractableObject, (InteractionManager.instance.isOpen)? "" : "[ E ] " + nearestInteractable.DisplayText());
+
+    }
+
     #region Graffiti
 
     public void StartGraffitiMode()
@@ -206,6 +237,7 @@ public class PlayerController : Brain
         go.transform.position = position;
         go.transform.forward = normal;
         currentGraffiti = go.AddComponent<LineRenderer>();
+        currentGraffiti.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         currentGraffiti.SetPosition(0, position);
         currentGraffiti.SetPosition(1, position);
         currentGraffiti.startWidth = 0.05f;

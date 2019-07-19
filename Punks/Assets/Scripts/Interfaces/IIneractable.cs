@@ -5,4 +5,6 @@ using UnityEngine;
 public interface IInteractable
 {
     bool Interact(Actor actor);
+
+    string DisplayText();
 }
