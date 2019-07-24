@@ -172,12 +172,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be123ab4f4fc75343994689257941358, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  routine: {fileID: 0}
+  schedule: {fileID: 0}
   intractionRadius: 2
+  _inInteraction: 0
   state: 0
   lastState: 0
   goal: {fileID: 0}
   lastGoal: {fileID: 0}
+  todaysRoutine:
+    days: 
+    _actions: []
+  minMaxAttackRate: {x: 0.2, y: 0.75}
 --- !u!1001 &1234447132649761737
 PrefabInstance:
   m_ObjectHideFlags: 0

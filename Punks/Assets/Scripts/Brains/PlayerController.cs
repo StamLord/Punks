@@ -37,8 +37,12 @@ public class PlayerController : Brain
 
     private void Update()
     {
-        FindAllInteractables();
-        FindNearestInteractble();
+        if (inInteraction == false)
+        {
+            FindAllInteractables();
+            FindNearestInteractble();
+        }
+
         UpdateInteractionText();
 
         if (Input.GetButtonDown("Interact"))
@@ -51,19 +55,27 @@ public class PlayerController : Brain
 
             else if(InteractionManager.instance.isOpen)
             {
-                InteractionManager.instance.CloseInteractionMenu();
+                InteractionManager.instance.Select();
                 return;
             }
 
             if(nearestInteractable != null)
             {
-                nearestInteractable.Interact(actor);
+                nearestInteractable.Interact(this);
             }
         }
 
         if (Input.GetButtonDown("Jump"))
         {
-            actor.Jump();
+            _actor.Jump();
+        }
+
+        if (Input.GetButtonDown("Stats"))
+        {
+            if (StatsWindow.instance.isOpen)
+                StatsWindow.instance.CloseStats();
+            else
+                StatsWindow.instance.OpenStats(actor);
         }
 
         if (Input.GetKeyDown(KeyCode.G))
@@ -80,19 +92,19 @@ public class PlayerController : Brain
         {
             if (Input.GetMouseButtonDown(0))
             {
-                actor.MainAttack();
+                _actor.MainAttack();
             }
 
             else if (Input.GetMouseButtonDown(1))
             {
-                actor.SecondaryAttack();
+                _actor.SecondaryAttack();
             }
 
         }
 
         if (Input.GetButtonDown("Drop"))
         {
-            actor.DropWeapon();
+            _actor.DropWeapon();
         }
 
         if(Input.GetButtonDown("Map"))
@@ -124,7 +136,7 @@ public class PlayerController : Brain
         if (inInteraction)
             input = Vector3.zero;
 
-        actor.Move(input);
+        _actor.Move(input);
 
         //Update nearby gang members of current enemies
         RemoveDeadEnemies();
@@ -135,7 +147,7 @@ public class PlayerController : Brain
     {
         base.OnDamaged(attacker);
 
-        if (attacker.GetActorData().gang != actor.GetActorData().gang)
+        if (attacker.GetActorData().gang != _actor.GetActorData().gang)
             AddEnemy(attacker);
     }
 
@@ -143,7 +155,7 @@ public class PlayerController : Brain
     {
         base.OnAttacking(enemy);
 
-        if (enemy.GetActorData().gang != actor.GetActorData().gang)
+        if (enemy.GetActorData().gang != _actor.GetActorData().gang)
             AddEnemy(enemy);
     }
 
@@ -151,7 +163,7 @@ public class PlayerController : Brain
     {
         base.AddEnemy(enemy);
         if (enemies.Contains(enemy) == false &&
-            enemy != actor)
+            enemy != _actor)
         {
             enemies.Add(enemy);
         }
@@ -171,7 +183,7 @@ public class PlayerController : Brain
 
     private void UpdateNearbyAllies()
     {
-        if (GangManager.instance.GetGang(actor.GetActorData().gang))
+        if (GangManager.instance.GetGang(_actor.GetActorData().gang))
         {
             List<Brain> gangMembers = FindGangMembers(10f);
             for (int i = 0; i < gangMembers.Count; i++)
@@ -186,7 +198,7 @@ public class PlayerController : Brain
 
     private void UpdateTerritoryName()
     {
-        Territory current = actor.GetTerritory;
+        Territory current = _actor.GetTerritory;
 
         if (current)
         {
@@ -210,7 +222,7 @@ public class PlayerController : Brain
     private void UpdateHealthBar()
     {
         if(healthBar)
-            healthBar.fillAmount = (float)actor.GetStats.health / (float)actor.GetActorData().stats.health;
+            healthBar.fillAmount = (float)_actor.GetStats.health / (float)_actor.GetActorData().stats.health;
     }
 
     private void UpdateInteractionText()

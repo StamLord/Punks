@@ -5,7 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(Actor))]
 public class Brain : MonoBehaviour
 {
-    protected Actor actor;
+    protected Actor _actor;
+    public Actor actor { get { return _actor; } }
     [SerializeField] protected Schedule schedule;
     [SerializeField] protected float intractionRadius = 2f;
     protected List<GameObject> nearbyInteractableObjects = new List<GameObject>();
@@ -13,15 +14,15 @@ public class Brain : MonoBehaviour
     protected GameObject nearestInteractableObject;
     protected IInteractable self; //For ignoring
 
-    private bool _inInteraction;
+    [SerializeField] private bool _inInteraction;
     public bool inInteraction { get { return _inInteraction; } }
 
     protected virtual void Start()
     {
-        actor = GetComponent<Actor>();
-        actor.OnDamagedEvent += OnDamaged;
-        actor.OnAttackingEvent += OnAttacking;
-        self = actor.GetComponent<IInteractable>();
+        _actor = GetComponent<Actor>();
+        _actor.OnDamagedEvent += OnDamaged;
+        _actor.OnAttackingEvent += OnAttacking;
+        self = _actor.GetComponent<IInteractable>();
     }
 
     protected void FindAllInteractables()
@@ -58,7 +59,7 @@ public class Brain : MonoBehaviour
 
     protected List<Brain> FindGangMembers(float radius)
     {
-        if (string.IsNullOrEmpty(actor.GetActorData().gang))
+        if (string.IsNullOrEmpty(_actor.GetActorData().gang))
             return null;
 
         Collider[] nearbyObjects = Physics.OverlapSphere(transform.position, radius);
@@ -67,7 +68,7 @@ public class Brain : MonoBehaviour
         for (int i = 0; i < nearbyObjects.Length; i++)
         {
             Brain brain = nearbyObjects[i].GetComponent<Brain>();
-            if (brain && brain.InGang(actor.GetActorData().gang))
+            if (brain && brain.InGang(_actor.GetActorData().gang))
                 members.Add(brain);
 
         }
@@ -79,8 +80,8 @@ public class Brain : MonoBehaviour
     {
         //Check if exists, then check if is equal
         if (GangManager.instance.GetGang(gang) && 
-            string.IsNullOrEmpty(actor.GetActorData().gang) == false &&
-            actor.GetActorData().gang == gang)
+            string.IsNullOrEmpty(_actor.GetActorData().gang) == false &&
+            _actor.GetActorData().gang == gang)
             return true;
         else
             return false;

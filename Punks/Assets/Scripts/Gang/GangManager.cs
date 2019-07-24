@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Linq;
 
 public class GangManager : MonoBehaviour
 {
@@ -19,6 +20,11 @@ public class GangManager : MonoBehaviour
 
     private Dictionary<Gang, List<ActorData>> spawnedMembers = new Dictionary<Gang, List<ActorData>>();
 
+    [Header("Template Gang")]
+    [SerializeField] private Gang template;
+
+    #region Signleton
+
     public static GangManager instance;
 
     private void Awake()
@@ -29,11 +35,14 @@ public class GangManager : MonoBehaviour
             Debug.LogWarning("More than 1 instance of GangManager exists!");
     }
 
+    #endregion
+
     void Start()
     {
         timeSystem = DayNightCycle.instance;
         LoadAllGangs();
         InitializeSpawned();
+        SaveGang(template);
     }
 
     void CreateDirectory()
@@ -53,12 +62,19 @@ public class GangManager : MonoBehaviour
 
         for (int i = 0; i < info.Length; i++)
         {
-            gangs.Add(XML.Deserialize<Gang>(info[i].FullName));
+            Gang loaded = XML.Deserialize<Gang>(info[i].FullName);
+            gangs.Add(loaded);
+
+            for (int j = 0; j < loaded.territories.Count; j++)
+            {
+                TerritoryManager.instance.SetTerritoryValues(loaded.territories[j].territoryName, loaded, loaded.territories[j].influence);
+            }
+
             Debug.Log("Loaded Gang::" + info[i].FullName);
         }
     }
 
-    void SaveAllGangs()
+    public void SaveAllGangs()
     {
         for (int i = 0; i < gangs.Count; i++)
         {
@@ -70,6 +86,20 @@ public class GangManager : MonoBehaviour
     void SaveGang(Gang gang)
     {
         CreateDirectory();
+
+        //Update territories under control
+
+        List<Territory> territories = TerritoryManager.instance.GetTerritories(gang);
+        gang.territories.Clear();
+
+        for (int i = 0; i < territories.Count; i++)
+        {
+            gang.territories.Add(new TerritoryData
+            {
+                territoryName = territories[i].name,
+                influence = territories[i].influence
+            });
+        }
 
         XML.Serialize(gang, Application.dataPath + "/" + directory + "/" + gang.gangName + ".xml");
     }
@@ -149,7 +179,17 @@ public class GangManager : MonoBehaviour
                 notSpawned.Remove(spawnedMembers[gang][i]);
         }
 
+        notSpawned.RemoveAll(IsHospitalized);
+
         return notSpawned[Random.Range(0, notSpawned.Count)];
+    }
+
+    public bool IsHospitalized(ActorData actorData)
+    {
+        if (actorData.hospitalizedDay + actorData.hospitalizedDuration > DayNightCycle.instance.dayNumber)
+            return true;
+
+        return false;
     }
 
     public void AddToSpawned(ActorData member)
@@ -166,7 +206,9 @@ public class GangManager : MonoBehaviour
             for (int i = 0; i < gangs.Count; i++)
             {
                 if (gangName == gangs[i].gangName)
+                {
                     return gangs[i];
+                }
             }
         }
 

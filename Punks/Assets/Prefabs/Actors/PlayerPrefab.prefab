@@ -7,7 +7,7 @@ NavMeshObstacle:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3265791885428206487}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Shape: 0
   m_Extents: {x: 0.25, y: 1, z: 0.25}
@@ -28,8 +28,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9905350d6b86f1c4987d1053e5b3118d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  intractionRadius: 3
-  camera: {fileID: 0}
+  schedule: {fileID: 0}
+  intractionRadius: 2
+  _inInteraction: 0
+  healthBar: {fileID: 0}
+  moneyDisplay: {fileID: 0}
+  territoryName: {fileID: 0}
+  interaction: {fileID: 0}
+  takeOverParent: {fileID: 0}
+  territoryTakeoverBar: {fileID: 0}
+  inGraffitiMode: 0
+  graffitiCamera: {fileID: 0}
+  graffitiMask:
+    serializedVersion: 2
+    m_Bits: 0
+  currentGraffiti: {fileID: 0}
+  graffiti: []
+  graffitiMaterial: {fileID: 0}
+  map: {fileID: 0}
 --- !u!1001 &6069968466932339630
 PrefabInstance:
   m_ObjectHideFlags: 0

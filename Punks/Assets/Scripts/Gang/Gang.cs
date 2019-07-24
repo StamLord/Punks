@@ -21,6 +21,8 @@ public class Gang : ScriptableObject
     public float recruitPerDay;
     public int lastRecruitDay;
 
+    public List<TerritoryData> territories = new List<TerritoryData>();
+
     public bool AttemptRecruit(ActorData actor)
     {
         if(members.Count <  maxCapacity)

@@ -7,6 +7,7 @@ public class Weapon : Item
 {
     public Vector3 offset;
     public Vector3 rotation;
+    public Vector3 scale = Vector3.one;
 
     public string[] mainAnimation;
     public string[] secondaryAnimation;
@@ -37,5 +38,10 @@ public class Weapon : Item
             actor.AnimateAttack(secondaryAnimation[secondaryAnimation.Length - 1]);
         else
             actor.AnimateAttack(secondaryAnimation[attackNumber]);
+    }
+
+    public virtual void RemoveDurability(int amount)
+    {
+        durability -= amount;
     }
 }

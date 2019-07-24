@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public struct TerritoryData
+{
+    public string territoryName;
+    public float influence;
+}
+
 public class Territory : MonoBehaviour
 {
 
@@ -21,7 +28,8 @@ public class Territory : MonoBehaviour
     public bool beingTakenOver { get { return _beingTakenOver; } }
 
     [Range(0,100)]
-    [SerializeField] private float influence;
+    [SerializeField] private float _influence;
+    public float influence { get { return _influence; } }
     [SerializeField] private float influenceOverTime;
     [SerializeField] private float influencePerMember;
 
@@ -30,12 +38,14 @@ public class Territory : MonoBehaviour
 
     private void Start()
     {
-        MiniMapBoundries();
+        if(minimapBoundries == null)
+            MiniMapBoundries();
     }
 
     private void Update()
     {
-        if(rulingGang == null)
+
+        if (rulingGang == null)
         {
             CalculateTakeover();
         }
@@ -77,7 +87,7 @@ public class Territory : MonoBehaviour
             rulingGang = gangsPresent[0];
             takeOverProgress = _takeOverMeter = 0f;
             _beingTakenOver = false;
-            influence = 10;
+            _influence = 10;
             UpdateMiniMapColor(rulingGang.gangColor);
         }
     }
@@ -85,21 +95,21 @@ public class Territory : MonoBehaviour
     private void CalculateInfluence()
     {
         if (gangMembersPresent.Count < 1)
-            influence += influenceOverTime * Time.deltaTime;
+            _influence += influenceOverTime * Time.deltaTime;
         else
         {
             for (int i = 0; i < gangMembersPresent.Count; i++)
             {
                 if (gangMembersPresent[i].gang == rulingGang.gangName)
-                    influence += influencePerMember * Time.deltaTime;
+                    _influence += influencePerMember * Time.deltaTime;
                 else
-                    influence -= influencePerMember * Time.deltaTime;
+                    _influence -= influencePerMember * Time.deltaTime;
             }
         }
 
-        influence = Mathf.Clamp(influence, 0, 100);
+        _influence = Mathf.Clamp(_influence, 0, 100);
 
-        if(influence == 0)
+        if(_influence == 0)
         {
             rulingGang = null;
             UpdateMiniMapColor(Color.black);
@@ -180,9 +190,20 @@ public class Territory : MonoBehaviour
 
     private void UpdateMiniMapColor(Color color)
     {
+        if (minimapBoundries == null)
+            MiniMapBoundries();
+
         Color newColor = color;
         newColor.a = .5f;
 
         minimapBoundries.material.color = newColor;
+    }
+
+    public void SetValues(Gang newGang, float newInfluence)
+    {
+        rulingGang = newGang;
+        _influence = newInfluence;
+
+        UpdateMiniMapColor(rulingGang.gangColor);
     }
 }

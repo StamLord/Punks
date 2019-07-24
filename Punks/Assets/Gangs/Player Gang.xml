@@ -25,7 +25,12 @@
       <health>0</health>
       <attack>0</attack>
       <defense>0</defense>
+      <speed>0</speed>
+      <attackProgress>0</attackProgress>
+      <defenseProgress>0</defenseProgress>
+      <speedProgress>0</speedProgress>
     </stats>
+    <money>0</money>
     <appearance>
       <head>0</head>
       <torso>0</torso>
@@ -45,7 +50,12 @@
         <health>100</health>
         <attack>5</attack>
         <defense>5</defense>
+        <speed>0</speed>
+        <attackProgress>0</attackProgress>
+        <defenseProgress>0</defenseProgress>
+        <speedProgress>0</speedProgress>
       </stats>
+      <money>0</money>
       <appearance>
         <head>0</head>
         <torso>0</torso>
@@ -61,4 +71,14 @@
   <autoRecruit>false</autoRecruit>
   <recruitPerDay>0</recruitPerDay>
   <lastRecruitDay>0</lastRecruitDay>
+  <territories>
+    <TerritoryData>
+      <territoryName>Main Street</territoryName>
+      <influence>12.3311939</influence>
+    </TerritoryData>
+    <TerritoryData>
+      <territoryName>Alley</territoryName>
+      <influence>11.5106707</influence>
+    </TerritoryData>
+  </territories>
 </Gang>

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SaveSpot : MonoBehaviour, IInteractable
 {
-    public bool Interact(Actor actor)
+    public bool Interact(Brain brain)
     {
         SaveGame.Save();
         return true;

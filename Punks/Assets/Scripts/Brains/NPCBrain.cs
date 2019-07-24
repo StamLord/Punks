@@ -31,6 +31,8 @@ public class NPCBrain : Brain, IInteractable
 
     //Fighting
     private List<Actor> enemies = new List<Actor>();
+    [SerializeField] private Vector2 minMaxAttackRate = new Vector2(0.25f, 1f);
+    private float nextAttackTime;
 
     protected override void Start()
     {
@@ -44,7 +46,7 @@ public class NPCBrain : Brain, IInteractable
 
     private void Update()
     {
-        if(actor.isDead)
+        if(_actor.isDead)
         {
             SetState(NPCState.IDLE);
         }
@@ -105,7 +107,7 @@ public class NPCBrain : Brain, IInteractable
     {
         if (schedule != null && isSpawned == false)
         {
-            actor.Move(Vector3.zero);
+            _actor.Move(Vector3.zero);
             return;
         }
 
@@ -127,11 +129,11 @@ public class NPCBrain : Brain, IInteractable
                 direction *= Mathf.Clamp(1f / (8f / distance), .3f, 1f);
             }
 
-            actor.Move(direction);
+            _actor.Move(direction);
         }
         else
         {
-            actor.Move(Vector3.zero);
+            _actor.Move(Vector3.zero);
         }
     }
 
@@ -157,6 +159,43 @@ public class NPCBrain : Brain, IInteractable
                 if(DayNightCycle.instance.GetTime().hours >= time.hours &&
                     DayNightCycle.instance.GetTime().minutes >= time.minutes)
                 {
+                    //Check if next routine exists
+                    if (i + 1 < todaysRoutine._actions.Count)
+                    {
+                        HourMinutes nextTime = new HourMinutes(todaysRoutine._actions[i + 1].time);
+
+                        //Check if time to start next routine
+                        if(DayNightCycle.instance.GetTime().hours >= nextTime.hours &&
+                            DayNightCycle.instance.GetTime().minutes >= nextTime.minutes)
+                        {
+                            //Update state and position, making current routine done
+                            switch(todaysRoutine._actions[i].type)
+                            {
+                                case RoutineAction.RoutineActionType.SPAWN:
+                                    if(isSpawned == false)
+                                        Spawn(LocationsManager.instance.GetLocation(todaysRoutine._actions[i].destination).position);
+                                    break;
+
+                                case RoutineAction.RoutineActionType.DESPAWN:
+                                    if(isSpawned)
+                                        Despawn();
+                                    break;
+
+                                case RoutineAction.RoutineActionType.GO:
+                                    if (isSpawned == false)
+                                        Spawn(LocationsManager.instance.GetLocation(todaysRoutine._actions[i].destination).position);
+                                    else
+                                        agent.Warp(LocationsManager.instance.GetLocation(todaysRoutine._actions[i].destination).position);
+                                    break;
+                            }
+
+                            todaysRoutine._actions[i].done = true;
+
+                            //Next frame will skip to next not done routine
+                            return;
+                        }
+
+                    }
                     //Check location exists in current map
                     if (LocationsManager.instance.LocationExists(todaysRoutine._actions[i].destination))
                     {
@@ -240,16 +279,31 @@ public class NPCBrain : Brain, IInteractable
 
         if(Vector3.Distance(transform.position, goal.position) <= agent.stoppingDistance)
         {
-            StartCoroutine(actor.RotateOverTime(goal.position - transform.position, .25f));
+            StartCoroutine(_actor.RotateOverTime(goal.position - transform.position, .25f));
 
-            if (Random.Range(0, 2) == 1)
-                actor.MainAttack();
-            else
-                actor.SecondaryAttack();
+            if (Time.time >= nextAttackTime)
+            {
+                if (Random.Range(0, 2) == 1)
+                    _actor.MainAttack();
+                else
+                    _actor.SecondaryAttack();
+
+                string[] quotes = actor.GetActorData().fightQuotes;
+
+                if (quotes != null && quotes.Length > 0 && Random.Range(0, 11) == 0)
+                {
+                    SpeachBaloonManager.instance.CreateBalloon(transform,
+                        quotes[Random.Range(0, quotes.Length)],
+                        0.5f,
+                        3f);
+                }
+
+                nextAttackTime = Time.time + Random.Range(minMaxAttackRate.x, minMaxAttackRate.y);
+            }
         }
 
         //Update nearby members
-        if (GangManager.instance.GetGang(actor.GetActorData().gang))
+        if (GangManager.instance.GetGang(_actor.GetActorData().gang))
         {
             List<Brain> gangMembers = FindGangMembers(10f);
             for (int i = 0; i < gangMembers.Count; i++)
@@ -266,7 +320,7 @@ public class NPCBrain : Brain, IInteractable
     {
         base.AddEnemy(enemy);
         if (enemies.Contains(enemy) == false &&
-            enemy != actor)
+            enemy != _actor)
             enemies.Add(enemy);
     }
 
@@ -324,17 +378,18 @@ public class NPCBrain : Brain, IInteractable
         SetState(lastState);
     }
 
-    public bool Interact(Actor interactor)
+    public bool Interact(Brain interactor)
     {
-        Debug.Log(actor + "::Interacts with::" + this);
+        if (actor.isDead)
+            return false;
 
-        StartInteraction();
+        Debug.Log(_actor + "::Interacts with::" + this);
 
         //SpeachBaloonManager.instance.CreateBalloon(transform, Random.Range(0,100).ToString(), 2f, 5f);
         //DialogueManager.instance.StartDialogue(actor.GetDialogue);
-        StartCoroutine(actor.RotateOverTime(interactor.transform.position - transform.position, .25f));
+        StartCoroutine(_actor.RotateOverTime(interactor.transform.position - transform.position, .25f));
 
-        if (InGang(interactor.GetActorData().gang))
+        if (InGang(interactor.actor.GetActorData().gang))
             InteractionManager.instance.OpenInteractionMenu(new InteractionType[]
             {
                 InteractionType.Talk,
@@ -342,29 +397,32 @@ public class NPCBrain : Brain, IInteractable
                 InteractionType.Stats,
                 InteractionType.Trade
             }, new Brain[]{
-                interactor.GetComponent<Brain>(),
-                this });
+                this,
+                interactor });
         else
             InteractionManager.instance.OpenInteractionMenu(new InteractionType[]
             {
                 InteractionType.Talk
             }, new Brain[]{
-                interactor.GetComponent<Brain>(),
-                this });
+                this,
+                interactor });
 
         return true;
     }
 
     public string DisplayText()
     {
-        return "Talk";
+        if (actor.isDead)
+            return "";
+        else
+            return "Talk";
     }
 
     protected override void OnDamaged(Actor attacker)
     {
         base.OnDamaged(attacker);
 
-        string gang = actor.GetActorData().gang;
+        string gang = _actor.GetActorData().gang;
         if (string.IsNullOrEmpty(gang) == false && gang == attacker.GetActorData().gang)
         {
             return;

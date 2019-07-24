@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Beer Bottle
   model: {fileID: 1202142091014386, guid: 7e654c46a1675d54b9f49922393cbc7a, type: 3}
-  offset: {x: -0.18, y: 0.02, z: -0.06}
-  rotation: {x: 16.45, y: -20.48, z: -77.069}
+  offset: {x: -1.58, y: 0.43, z: -0.8}
+  rotation: {x: 53.6, y: -34, z: -90}
+  scale: {x: 10, y: 10, z: 10}
   mainAnimation:
   - Bottle 1
   - Bottle 2
-  - Bottle 3
   secondaryAnimation: []
   durability: 3
   attack: 2

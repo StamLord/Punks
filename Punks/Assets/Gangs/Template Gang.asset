@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c191305adde8a7a4d8d551a911e3dbcb, type: 3}
+  m_Name: Template Gang
+  m_EditorClassIdentifier: 
+  gangName: Template Gang
+  gangColor: {r: 0, g: 0, b: 0, a: 1}
+  uniform:
+    head: 0
+    torso: 0
+    legs: 0
+    shoes: 0
+    accessory: 0
+    color: 0
+  leader:
+    firstName: 
+    lastName: 
+    gang: 
+    stats:
+      health: 0
+      attack: 0
+      defense: 0
+      speed: 0
+      attackProgress: 0
+      defenseProgress: 0
+      speedProgress: 0
+    money: 0
+    appearance:
+      head: 0
+      torso: 0
+      legs: 0
+      shoes: 0
+      accessory: 0
+      color: 0
+    fightQuotes: []
+    winQuotes: []
+    hospitalizedDay: 0
+    hospitalizedDuration: 0
+  maxCapacity: 10
+  members: []
+  allies: []
+  enemies: []
+  autoRecruit: 0
+  recruitPerDay: 0
+  lastRecruitDay: 0
+  territories: []

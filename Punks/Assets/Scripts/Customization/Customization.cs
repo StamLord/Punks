@@ -92,7 +92,7 @@ public class Customization : MonoBehaviour
 
     public void DressCharacter(Transform head, Transform torso, Transform legs, Transform shoes, SkinnedMeshRenderer renderer, AppearanceData appearance)
     {
-        renderer.materials[5].color = colors[appearance.color];
+        //renderer.materials[0].color = colors[appearance.color];
     }
 
     public void DressCharacter(Transform head, Transform torso, Transform legs, Transform shoes, SkinnedMeshRenderer renderer, AppearanceData appearance, AppearanceData gangUniform)

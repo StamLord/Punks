@@ -19,6 +19,9 @@ public class DialogueManager : MonoBehaviour
 
     public static DialogueManager instance;
 
+    [SerializeField]
+    private Brain[] interacting;
+
     private void Awake()
     {
         if (instance == null)
@@ -27,13 +30,15 @@ public class DialogueManager : MonoBehaviour
             Debug.LogWarning("More than 1 instance of DialogueManager exists!");
     }
 
-    public void StartDialogue(DialogueTree dialogue)
+    public void StartDialogue(DialogueTree dialogue, Brain[] interactors)
     {
         _inDialogue = true;
 
+        interacting = interactors;
+
         dialogueWindow.SetActive(true);
 
-        nameHolder.text = "[ " + dialogue.name + " ]";
+        nameHolder.text = "[ " + interacting[0].actor.GetActorData().firstName + " " + interacting[0].actor.GetActorData().lastName + " ]";
 
         currentDialogue = dialogue;
 
@@ -60,5 +65,17 @@ public class DialogueManager : MonoBehaviour
         _inDialogue = false;
         dialogueWindow.SetActive(false);
         currentDialogue.Reset();
+
+        EndAllInteractions();
+    }
+
+    private void EndAllInteractions()
+    {
+        for (int i = 0; i < interacting.Length; i++)
+        {
+            interacting[i].EndInteraction();
+        }
+
+        interacting = null;
     }
 }

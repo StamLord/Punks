@@ -8,5 +8,8 @@ public class SaveGame
     {
         if (CharacterManager.instance)
             CharacterManager.instance.SaveAllCharacters();
+
+        if (GangManager.instance)
+            GangManager.instance.SaveAllGangs();
     }
 }

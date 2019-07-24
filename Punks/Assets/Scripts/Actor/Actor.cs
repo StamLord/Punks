@@ -245,6 +245,7 @@ public class Actor : MonoBehaviour, IDamagable
             _weaponModel = Instantiate(weapon.model, rightHand);
             _weaponModel.transform.localPosition = weapon.offset;
             _weaponModel.transform.localRotation = Quaternion.Euler(weapon.rotation);
+            _weaponModel.transform.localScale = weapon.scale;
         }
     }
 
@@ -304,9 +305,10 @@ public class Actor : MonoBehaviour, IDamagable
 
     private void Kill()
     {
-        Debug.Log("Dead");
         animator.CrossFade("Knockout Back", .1f);
         _isDead = true;
+        actorData.hospitalizedDay = DayNightCycle.instance.dayNumber;
+        actorData.hospitalizedDuration = Random.Range(4, 8);
     }
 
     public void MainAttack()
@@ -357,6 +359,17 @@ public class Actor : MonoBehaviour, IDamagable
 
         if (territory != null)
             territory.AddActor(actorData);
+    }
+
+    public void ProgressAttack(float amount)
+    {
+        currentStats.attackProgress += amount;
+
+        if (currentStats.attackProgress >= 1f)
+        {
+            currentStats.attack++;
+            currentStats.attackProgress -= 1f;
+        }
     }
 
 }

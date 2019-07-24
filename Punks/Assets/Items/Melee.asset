@@ -19,6 +19,7 @@ MonoBehaviour:
   mainAnimation:
   - Boxing
   - Boxing 2
+  - Boxing 3
   secondaryAnimation:
   - Kick
   durability: 0

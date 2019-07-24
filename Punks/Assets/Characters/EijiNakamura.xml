@@ -8,6 +8,10 @@
       <health>76</health>
       <attack>2</attack>
       <defense>3</defense>
+      <speed>0</speed>
+      <attackProgress>0</attackProgress>
+      <defenseProgress>0</defenseProgress>
+      <speedProgress>0</speedProgress>
     </stats>
     <money>0</money>
     <appearance>

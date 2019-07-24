@@ -8,6 +8,11 @@ public struct ActorStats
     public int health;
     public int attack;
     public int defense;
+    public int speed;
+
+    public float attackProgress;
+    public float defenseProgress;
+    public float speedProgress;
 }
 
 [System.Serializable]
@@ -19,6 +24,12 @@ public struct ActorData
     public ActorStats stats;
     public int money;
     public AppearanceData appearance;
+
+    public string[] fightQuotes;
+    public string[] winQuotes;
+
+    public int hospitalizedDay;
+    public int hospitalizedDuration;
 }
 
 public static class ActorFactory

@@ -7,6 +7,11 @@ public class Hitbox : MonoBehaviour
     [SerializeField]
     private Actor actor;
 
+    private void OnValidate()
+    {
+        actor = transform.root.GetComponent<Actor>();
+    }
+
     void Start()
     {
         if (actor == null)
@@ -30,7 +35,7 @@ public class Hitbox : MonoBehaviour
 
         if (rigidbody)
         {
-            rigidbody.AddForceAtPosition(((other.transform.position - transform.position).normalized + Vector3.up / 2) * 10, 
+            rigidbody.AddForceAtPosition(((other.ClosestPoint(transform.position) - transform.position).normalized + Vector3.up / 2) * 10, 
                 other.ClosestPoint(transform.position),
                 ForceMode.Impulse);
         }

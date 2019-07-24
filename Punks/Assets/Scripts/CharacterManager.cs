@@ -43,7 +43,10 @@ public class CharacterManager : MonoBehaviour
             stats = new ActorStats(),
             gang = "",
             money = 0,
-            appearance = new AppearanceData() };
+            appearance = new AppearanceData(),
+            fightQuotes = new string[] { "Quote 1" },
+            winQuotes = new string[] { "Win quote 1" }
+        };
 
         character.schedule = new Schedule();
 

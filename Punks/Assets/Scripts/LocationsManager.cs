@@ -36,7 +36,7 @@ public class LocationsManager : MonoBehaviour
         for (int i = 0; i < locationNames.Length; i++)
         {
             Gizmos.DrawWireCube(locationPositions[i].position, Vector3.one);
-            Handles.Label(locationPositions[i].position, locationNames[i]);
+            //Handles.Label(locationPositions[i].position, locationNames[i]);
         }
     }
 

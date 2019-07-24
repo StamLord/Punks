@@ -20,13 +20,18 @@ public class InteractionText : MonoBehaviour
     {
         target = newTarget;
         displayText.text = text;
+        UpdatePosition();
     }
 
     private void FixedUpdate()
     {
-        if(target)
-            transform.position = camera.WorldToScreenPoint(target.transform.position + offset);
+        UpdatePosition();
     }
 
+    private void UpdatePosition()
+    {
+        if (target)
+            transform.position = camera.WorldToScreenPoint(target.transform.position + offset);
+    }
 
 }

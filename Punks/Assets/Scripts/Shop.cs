@@ -11,12 +11,12 @@ public class Shop : MonoBehaviour, IInteractable
 
     Actor buyer;
 
-    public bool Interact(Actor actor)
+    public bool Interact(Brain brain)
     {
         if (buyer != null)
             return false;
 
-        buyer = actor;
+        buyer = brain.actor;
         OpenShopWindow();
         return true;
     }

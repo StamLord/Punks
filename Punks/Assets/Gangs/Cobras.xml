@@ -25,7 +25,12 @@
       <health>0</health>
       <attack>0</attack>
       <defense>0</defense>
+      <speed>0</speed>
+      <attackProgress>0</attackProgress>
+      <defenseProgress>0</defenseProgress>
+      <speedProgress>0</speedProgress>
     </stats>
+    <money>0</money>
     <appearance>
       <head>0</head>
       <torso>0</torso>
@@ -38,14 +43,143 @@
   <maxCapacity>10</maxCapacity>
   <members>
     <ActorData>
-      <firstName />
+      <firstName> Punk 1</firstName>
       <lastName />
-      <gang />
+      <gang>Cobras</gang>
       <stats>
         <health>100</health>
         <attack>10</attack>
         <defense>10</defense>
+        <speed>0</speed>
+        <attackProgress>0</attackProgress>
+        <defenseProgress>0</defenseProgress>
+        <speedProgress>0</speedProgress>
       </stats>
+      <money>0</money>
+      <appearance>
+        <head>0</head>
+        <torso>0</torso>
+        <legs>0</legs>
+        <shoes>0</shoes>
+        <accessory>0</accessory>
+        <color>0</color>
+      </appearance>
+      <fightQuotes>
+        <string>Orrraa!</string>
+        <string>You piece of shit!</string>
+    </fightQuotes>
+    <winQuotes>
+    	<string>Stay down.</string>
+    </winQuotes>
+    <hospitalizedDay>0</hospitalizedDay>
+    <hospitalizedDuration>3</hospitalizedDuration>
+    </ActorData>
+    <ActorData>
+      <firstName> Punk 2</firstName>
+      <lastName />
+      <gang>Cobras</gang>
+      <stats>
+        <health>100</health>
+        <attack>10</attack>
+        <defense>10</defense>
+        <speed>0</speed>
+        <attackProgress>0</attackProgress>
+        <defenseProgress>0</defenseProgress>
+        <speedProgress>0</speedProgress>
+      </stats>
+      <money>0</money>
+      <appearance>
+        <head>0</head>
+        <torso>0</torso>
+        <legs>0</legs>
+        <shoes>0</shoes>
+        <accessory>0</accessory>
+        <color>0</color>
+      </appearance>
+    </ActorData>
+    <ActorData>
+      <firstName> Punk 3</firstName>
+      <lastName />
+      <gang>Cobras</gang>
+      <stats>
+        <health>100</health>
+        <attack>10</attack>
+        <defense>10</defense>
+        <speed>0</speed>
+        <attackProgress>0</attackProgress>
+        <defenseProgress>0</defenseProgress>
+        <speedProgress>0</speedProgress>
+      </stats>
+      <money>0</money>
+      <appearance>
+        <head>0</head>
+        <torso>0</torso>
+        <legs>0</legs>
+        <shoes>0</shoes>
+        <accessory>0</accessory>
+        <color>0</color>
+      </appearance>
+    </ActorData>
+    <ActorData>
+      <firstName> Punk 4</firstName>
+      <lastName />
+      <gang>Cobras</gang>
+      <stats>
+        <health>100</health>
+        <attack>10</attack>
+        <defense>10</defense>
+        <speed>0</speed>
+        <attackProgress>0</attackProgress>
+        <defenseProgress>0</defenseProgress>
+        <speedProgress>0</speedProgress>
+      </stats>
+      <money>0</money>
+      <appearance>
+        <head>0</head>
+        <torso>0</torso>
+        <legs>0</legs>
+        <shoes>0</shoes>
+        <accessory>0</accessory>
+        <color>0</color>
+      </appearance>
+    </ActorData>
+    <ActorData>
+      <firstName> Punk 5</firstName>
+      <lastName />
+      <gang>Cobras</gang>
+      <stats>
+        <health>100</health>
+        <attack>10</attack>
+        <defense>10</defense>
+        <speed>0</speed>
+        <attackProgress>0</attackProgress>
+        <defenseProgress>0</defenseProgress>
+        <speedProgress>0</speedProgress>
+      </stats>
+      <money>0</money>
+      <appearance>
+        <head>0</head>
+        <torso>0</torso>
+        <legs>0</legs>
+        <shoes>0</shoes>
+        <accessory>0</accessory>
+        <color>0</color>
+      </appearance>
+    </ActorData>
+    <ActorData>
+      <firstName> Punk 6</firstName>
+      <lastName />
+      <gang>Cobras</gang>
+      <stats>
+        <health>100</health>
+        <attack>10</attack>
+        <defense>10</defense>
+        <speed>0</speed>
+        <attackProgress>0</attackProgress>
+        <defenseProgress>0</defenseProgress>
+        <speedProgress>0</speedProgress>
+      </stats>
+      <money>0</money>
       <appearance>
         <head>0</head>
         <torso>0</torso>
@@ -61,4 +195,10 @@
   <autoRecruit>true</autoRecruit>
   <recruitPerDay>1</recruitPerDay>
   <lastRecruitDay>0</lastRecruitDay>
+  <territories>
+    <TerritoryData>
+      <territoryName>Uptown</territoryName>
+      <influence>100</influence>
+    </TerritoryData>
+  </territories>
 </Gang>

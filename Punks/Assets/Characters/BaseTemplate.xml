@@ -8,6 +8,10 @@
       <health>0</health>
       <attack>0</attack>
       <defense>0</defense>
+      <speed>0</speed>
+      <attackProgress>0</attackProgress>
+      <defenseProgress>0</defenseProgress>
+      <speedProgress>0</speedProgress>
     </stats>
     <money>0</money>
     <appearance>
@@ -18,6 +22,14 @@
       <accessory>0</accessory>
       <color>0</color>
     </appearance>
+    <fightQuotes>
+      <string>Quote 1</string>
+    </fightQuotes>
+    <winQuotes>
+      <string>Win quote 1</string>
+    </winQuotes>
+    <hospitalizedDay>0</hospitalizedDay>
+    <hospitalizedDuration>0</hospitalizedDuration>
   </actorData>
   <schedule>
     <name />

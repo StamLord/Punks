@@ -38,5 +38,36 @@ public class TerritoryManager : MonoBehaviour
         return null;
     }
 
+    public void SetTerritoryValues(string territoryName, Gang rulingGang, float influence)
+    {
+        Territory territory = null;
+
+        for (int i = 0; i < territories.Count; i++)
+        {
+            Debug.Log(territories[i].name);
+            if (territories[i].name == territoryName)
+                territory = territories[i];
+        }
+
+        if(territory != null)
+        {
+            territory.SetValues(rulingGang, influence);
+        }
+    }
+
+    public List<Territory> GetTerritories(Gang gang)
+    {
+        List<Territory> gangTerritories = new List<Territory>();
+
+        for (int i = 0; i < territories.Count; i++)
+        {
+            if(territories[i].GetGang == gang)
+            {
+                gangTerritories.Add(territories[i]);
+            }
+        }
+
+        return gangTerritories;
+    }
     
 }

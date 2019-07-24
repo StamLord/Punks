@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IInteractable
 {
-    bool Interact(Actor actor);
+    bool Interact(Brain brain);
 
     string DisplayText();
 }

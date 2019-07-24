@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<Gang xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <name>Template Gang</name>
+  <hideFlags>None</hideFlags>
+  <gangName>Template Gang</gangName>
+  <gangColor>
+    <r>0</r>
+    <g>0</g>
+    <b>0</b>
+    <a>1</a>
+  </gangColor>
+  <uniform>
+    <head>0</head>
+    <torso>0</torso>
+    <legs>0</legs>
+    <shoes>0</shoes>
+    <accessory>0</accessory>
+    <color>0</color>
+  </uniform>
+  <leader>
+    <firstName />
+    <lastName />
+    <gang />
+    <stats>
+      <health>0</health>
+      <attack>0</attack>
+      <defense>0</defense>
+      <speed>0</speed>
+      <attackProgress>0</attackProgress>
+      <defenseProgress>0</defenseProgress>
+      <speedProgress>0</speedProgress>
+    </stats>
+    <money>0</money>
+    <appearance>
+      <head>0</head>
+      <torso>0</torso>
+      <legs>0</legs>
+      <shoes>0</shoes>
+      <accessory>0</accessory>
+      <color>0</color>
+    </appearance>
+    <fightQuotes />
+    <winQuotes />
+    <hospitalizedDay>0</hospitalizedDay>
+    <hospitalizedDuration>0</hospitalizedDuration>
+  </leader>
+  <maxCapacity>10</maxCapacity>
+  <members />
+  <allies />
+  <enemies />
+  <autoRecruit>false</autoRecruit>
+  <recruitPerDay>0</recruitPerDay>
+  <lastRecruitDay>0</lastRecruitDay>
+  <territories />
+</Gang>

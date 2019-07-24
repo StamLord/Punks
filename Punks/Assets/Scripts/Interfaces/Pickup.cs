@@ -9,10 +9,10 @@ public class Pickup : MonoBehaviour, IInteractable
     [SerializeField] private float _rotationSpeed;
     [SerializeField] private Transform modelParent;
 
-    public bool Interact(Actor actor)
+    public bool Interact(Brain brain)
     {
-        Debug.Log(actor.name + "::Tried to pick up::" + gameObject.name);
-        return PickupItem(actor);
+        Debug.Log(brain.actor.name + "::Tried to pick up::" + gameObject.name);
+        return PickupItem(brain.actor);
     }
 
     public string DisplayText()
